@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+build/
+dist/
+
+# Local data
+/data/input_videos/
+/data/output/
+
+# Datasets
+bicycle_dataset/
+racks_dataset/
+bike rack dataset/
+
+# Large model weights (host externally for CI builds)
+yolov8s-world.pt
+src/yolov8m.pt
+rack_detector_best.pt
+rack_detector_best.onnx
+src/bicycle_models/
+
+# OS
+.DS_Store
+Thumbs.db

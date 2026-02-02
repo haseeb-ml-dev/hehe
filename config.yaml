@@ -1,0 +1,154 @@
+# ============================================================================
+# TRAFFIC DETECTOR CONFIGURATION
+# ============================================================================
+# This file contains all settings for the traffic detection system.
+# Adjust these values to customize the behavior for your needs.
+# 
+# NOTE: You can override these settings by running main.py interactively,
+#       or edit this file directly for permanent changes.
+# ============================================================================
+
+# ============================================================================
+# 📹 VIDEO INPUT SETTINGS
+# ============================================================================
+video:
+  # Directory where input videos are located
+  # Common paths: "./data/input_videos" or "./videos"
+  input_directory: "./data/input_videos"
+  
+  # Supported formats: mp4, avi, mov, mkv, flv, wmv
+  # Leave empty to be prompted for file selection
+  input_file: ""
+  
+  # Is this 360-degree footage?
+  # Set to true if your video is 360° equirectangular format
+  is_360_degree: true
+
+# ============================================================================
+# 💾 OUTPUT SETTINGS
+# ============================================================================
+output:
+  # Directory where processed videos and results are saved
+  directory: "./data/output"
+  
+  # Output video format and filename
+  # If empty, defaults to: {input_name}_processed.avi
+  video_filename: ""
+  
+  # Save detection results to CSV?
+  save_csv: true
+  
+  # Save detailed breakdown of detections?
+  save_detailed_counts: true
+
+# ============================================================================
+# 🤖 MODEL SETTINGS
+# ============================================================================
+model:
+  # YOLO model size for vehicle/bicycle detection
+  # Options: n (nano), s (small), m (medium), l (large), x (extra-large)
+  # Recommendation: 'm' for balanced speed/accuracy, 'l' for better accuracy
+  yolo_size: "m"
+  
+  # Detection confidence threshold (0.1 to 0.9)
+  # Higher = fewer detections but more confident
+  # Lower = more detections but some might be false positives
+  # Recommendation: 0.4 (balanced), 0.5 (more conservative), 0.55 for 360° videos
+  confidence_threshold: 0.5
+
+# ============================================================================
+# ⚡ PROCESSING OPTIMIZATION
+# ============================================================================
+processing:
+  # Frame skip - process every Nth frame for speed
+  # 1 = process every frame (maximum accuracy)
+  # 3 = process every 3rd frame (faster - default)
+  # 5 = process every 5th frame (much faster, less accurate)
+  frame_skip: 3
+  
+  # Percentage of total frames to process (1-100)
+  # 100 = process all frames (default, recommended)
+  # 50 = process every other frame (faster)
+  process_percentage: 100
+
+# ============================================================================
+# 🔍 OBJECT DETECTION SETTINGS
+# ============================================================================
+detection:
+  # Minimum number of frames an object must be detected before counting
+  # Higher = fewer false positives but might miss brief objects
+  # Recommendation: 3 (balanced default)
+  min_hits_before_counting: 3
+  
+  # Minimum object size in pixels
+  # Objects smaller than this are considered too distant and filtered out
+  # Recommendation: 40 (balanced), higher values = less clutter
+  min_object_size: 40
+  
+  # Distance filtering sensitivity
+  # 1.0 = very strict (closest objects only - best accuracy)
+  # 1.5 = moderate (balanced - recommended)
+  # 2.0 = loose (include more distant objects)
+  distance_filter_sensitivity: 1.5
+  
+  # Enable debug mode?
+  # Shows detailed classification information during processing
+  debug_mode: false
+
+# ============================================================================
+# 📊 GIS/LOCATION SETTINGS (Optional)
+# ============================================================================
+gis:
+  # Path to GIS metadata CSV file
+  # CSV should contain: video_file, location_name, latitude, longitude
+  # Leave empty to skip location metadata
+  metadata_file: ""
+  
+  # Example CSV format:
+  # video_file,location_name,latitude,longitude
+  # video1.mp4,Downtown Street,40.7128,-74.0060
+  # video2.mp4,Park Avenue,40.7614,-73.9776
+
+# ============================================================================
+# 🎯 DETECTION TARGETS (What to detect and track)
+# ============================================================================
+targets:
+  # Detect and count vehicles
+  detect_vehicles: true
+  
+  # Detect and count bicycles
+  detect_bicycles: true
+  
+  # Classify bicycles into types
+  # (standard, slightly_non_standard, highly_non_standard)
+  classify_bicycles: true
+  
+  # Detect parking signs
+  detect_signs: true
+  
+  # Track bicycle parking behavior
+  track_parking: true
+
+# ============================================================================
+# 💡 TIPS FOR BEGINNERS
+# ============================================================================
+# 
+# 1. START WITH DEFAULT VALUES
+#    The default settings work well for most scenarios.
+# 
+# 2. IF PROCESSING IS TOO SLOW
+#    - Increase frame_skip to 5 or 10
+#    - Reduce process_percentage to 50
+#    - Use smaller yolo_size ('s' instead of 'm')
+# 
+# 3. IF YOU'RE GETTING TOO MANY FALSE DETECTIONS
+#    - Increase confidence_threshold to 0.5 or 0.6
+#    - Increase min_object_size to 50 or 60
+#    - Increase min_hits_before_counting to 2 or 3
+# 
+# 4. IF YOU'RE MISSING SOME OBJECTS
+#    - Decrease confidence_threshold to 0.3 or 0.35
+#    - Decrease min_object_size to 30
+#    - Use larger yolo_size ('l' instead of 'm')
+# 
+# ============================================================================
