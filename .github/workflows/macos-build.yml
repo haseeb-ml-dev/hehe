@@ -1,0 +1,53 @@
+name: Build macOS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+
+      - name: Download model assets
+        env:
+          ASSET_BASE_URL: ${{ secrets.ASSET_BASE_URL }}
+        run: |
+          if [ -z "$ASSET_BASE_URL" ]; then
+            echo "ASSET_BASE_URL secret is not set";
+            exit 1;
+          fi
+          curl -L "$ASSET_BASE_URL/yolov8s-world.pt" -o yolov8s-world.pt
+          curl -L "$ASSET_BASE_URL/yolov8m.pt" -o src/yolov8m.pt
+          curl -L "$ASSET_BASE_URL/rack_detector_best.pt" -o rack_detector_best.pt
+          curl -L "$ASSET_BASE_URL/rack_detector_best.onnx" -o rack_detector_best.onnx
+          mkdir -p src/bicycle_models
+          curl -L "$ASSET_BASE_URL/knn_model.pkl" -o src/bicycle_models/knn_model.pkl
+          curl -L "$ASSET_BASE_URL/svm_model.pkl" -o src/bicycle_models/svm_model.pkl
+          curl -L "$ASSET_BASE_URL/rf_model.pkl" -o src/bicycle_models/rf_model.pkl
+          curl -L "$ASSET_BASE_URL/features_data.pkl" -o src/bicycle_models/features_data.pkl
+
+      - name: Build app
+        run: |
+          chmod +x build_macos.command
+          ./build_macos.command
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Traffic-Detector-macOS
+          path: dist/Traffic Detector.app
