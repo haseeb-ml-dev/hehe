@@ -46,8 +46,12 @@ jobs:
           chmod +x build_macos.command
           ./build_macos.command
 
+      - name: Package app
+        run: |
+          ditto -c -k --keepParent "dist/Traffic Detector.app" "Traffic-Detector-macOS.zip"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Traffic-Detector-macOS
-          path: dist/Traffic Detector.app
+          path: Traffic-Detector-macOS.zip
